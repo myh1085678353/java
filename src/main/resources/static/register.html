@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-theme.min.css">
+</head>
+<style>
+    body{
+        margin: 0;
+        padding: 0;
+    }
+    #enroll_form{
+        width:250px;
+        margin:0 auto;
+        margin-top:100px;
+    }
+</style>
+<script type="text/javascript">
+    var str = window.location.href;
+    str = str.substring(str.lastIndexOf("?")+1);
+    var map = str.split("=");
+    if(map[0] == "state"){
+        if(map[1] == "error"){
+            window.alert("注册失败，该账号已存在！");
+        }
+    }
+</script>
+<body>
+<div class="container">
+    <div class="form row">
+        <div class="form-horizontal col-md-offset-3" id="enroll_form">
+            <h3>注册</h3>
+            <div>
+                <form action="/user/uregister1" method="post" id="form">
+                    <table border='0' cellspacing='0' cellpadding='0'>
+                        <tr><td>账号:</td><td><input class="form-control" type="text" name="count" required/></td></tr>
+                        <tr><td>密码:</td><td><input class="form-control" type="password" name="password" id="password" required/></td></tr>
+                        <tr><td>确认密码:</td><td><input class="form-control" type="password" id="password2" required/></td></tr>
+                        <tr><td>姓名:</td><td><input class="form-control" type="text" name="name" required/></td></tr>
+                        <tr><td><input type="radio" value="admin" name="role">管理员</td>
+                            <td><input type="radio" value="teacher" name="role">教师&nbsp;&nbsp;
+                            <input type="radio" value="student" name="role" checked>学生</td></tr>
+                        </table>
+                    <button type="button" id="btn_submit" class="btn btn-success pull-right">注册</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#btn_submit").click(function(){
+            if(checkEmpty() && checkSame($("#password"),$("#password2"))){
+                $("#form").submit();
+            }
+        })
+    })
+    var getPass = function(name){
+        var pass = name.val();
+        return pass;
+    }
+    var checkSame = function(name1,name2){
+        var pass = getPass(name1);
+        var pass1 = getPass(name2);
+        if(pass != null && pass1 != null) {
+            if (pass != pass1) {
+                window.alert("两次密码不一致,请重新输入");
+                return false;
+            }
+        }
+        return true;
+    }
+    var checkEmpty = function(){
+        var check = $("table :input");
+        for(var i=0;i<check.length; i++){
+            if(check[i].value == ""){
+                window.alert("请输入"+check[i].name);
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+</body>
+</html>
