@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="js/bootstrap/bootstrap-table/bootstrap-table.css">
+<link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+<script src="js/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+<title>论坛首页</title>
+<style>
+    body{
+        width: 1000px;
+    }
+    #list{
+        table-layout:fixed;
+        word-break:break-all;
+        word-wrap:break-word;
+        border-collapse:collapse;
+        margin:0;
+        padding:0;
+    }
+</style>
+<div class="row">
+    <div class="col-md-3" style="min-width:1200px;">
+        <table id="list"></table>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        listInit();
+    })
+    function listInit(){
+        $('#list').bootstrapTable({
+            url: '/task/findAll',        //请求后台的URL（*）
+            pageNumber: 1,          //初始化加载第一页，默认第一页
+            toolbar: "#toolbar",
+            pagination: true,       //是否分页
+            sidePagination: 'server',//指定服务器端分页
+            pageSize: 20,//单页记录数
+            pageList: [10, 20, 30, 40, "ALL"],
+            responseHandler: responseHandler,
+            dataField: "rows",
+            uniqueId: "Id",
+            height: 540,
+            queryParams: queryParams,
+            columns: [{
+                field: 'title',
+                title: '任务列表',
+                align: "center",
+                width: "40%"
+            }, {
+                field: 'beginTime',
+                title: '创建时间',
+                align: "center"
+            }, {
+                field: 'sender',
+                title: '发送者',
+                align: "center",
+                formatter: senderFormatter
+            }, {
+                field: 'executor',
+                title: '执行人',
+                align: "center",
+                width: "10%",
+                formatter: executorFormatter
+            }, {
+                field: 'priority',
+                title: '优先级',
+                align: "center",
+                width: "5%",
+                formatter: priorityFormatter
+            }, {
+                field: 'id',
+                title: '操作',
+                align: "center",
+                formatter: idFormatter
+            }, ]
+        });
+    }
+
+    function idFormatter(value,row,index){
+        return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='show(" + value + ")'>查看</a>|<a href='javascript:;' onclick='delete(" + value + ")'>删除</a>";
+    }
+    function senderFormatter(value,row,index){
+        if(value && value.name)
+            return value.name;
+        else
+            return "-";
+    }
+    function executorFormatter(value,row,index){
+        if(value && value.name)
+            return value.name
+        else
+            return "-";
+    }
+    function priorityFormatter(value,row,index){
+        switch(value){
+            case 1: return "暂不";
+            case 2: return "一般";
+            case 3: return "需要";
+            case 4: return "急";
+            case 5: return "很急";
+            default:
+                return "-";
+        }
+    }
+
+    function responseHandler(result){
+        console.log(result);
+        console.log(result.total);
+        console.log(result.rows);
+        if (result.total > 0 && result.rows.length > 0) {
+            return {
+                total: result.total, //总页数,前面的key必须为"total"
+                rows: result.rows //行数据，前面的key要与之前设置的dataField的值一致.
+            };
+        } else if (result.total > 0 && !result.rows.length > 0) {
+            $("#tb_departments").bootstrapTable("selectPage", 1);
+            return;
+        }
+        return {
+            total: result.total, //总页数,前面的key必须为"total"
+            rows: result.rows//行数据，前面的key要与之前设置的dataField的值一致.
+
+        };
+    }
+
+    function queryParams(params) {
+        return {
+            rows: params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+            page: params.offset / params.limit + 1, //当前页面,默认是上面设置的1(pageNumber)
+        }
+    }
+</script>

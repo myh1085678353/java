@@ -13,18 +13,20 @@
         margin: 0;
         border: 0;
     }
+    .logo{
+        margin-top: -15px;
+        margin-left: -15px;
+    }
 </style>
 <body>
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">宁理论坛</a>
+            <a class="navbar-brand" href="#"><img src="image/logo.gif" class="logo" height="50" width="400"></a>
         </div>
         <div>
             <ul class="nav navbar-nav pull-right">
-                <li><a href="userLogin.html" id="user-login-label">登录</a></li>
-                <li><a href="register.html" id="user-register-label">注册</a></li>
-                <li><a href="#" id="user-name-label" style="display: none;">加载中...</a></li>
+                <li><a href="#" id="user-name-label">加载中...</a></li>
                 <li><a href="/top/login" target="_parent">退出</a></li>
             </ul>
         </div>
@@ -45,9 +47,7 @@
                 console.log("111");
                 console.log(data);
                 if(data != "error"){
-                    $("#user-login-label").hide();
-                    $("#user-login-label").hide();
-                    $("#user-name-label").show();
+                    $("#user-name-label").text("您好！"+data);
                 }else{
                     console.log("222");
                     window.alert("还未登录，跳转登陆界面！");

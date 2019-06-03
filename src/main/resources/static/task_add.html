@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任务添加</title>
+    <link rel="stylesheet" href="js/bootstrap/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+</head>
+<style>
+    body{
+        width: 1000px;
+    }
+
+</style>
+<body>
+<div class="form-horizontal" style="padding-left: 200px">
+    <h3>创建任务&nbsp;&nbsp;<button type="button" id="btn_submit" class="btn">添加</button></h3>
+    <form class="bs-example bs-example-form" role="form">
+        <div class="input-group col-md-12">
+            <span class="input-group-addon">任务标题：</span>
+            <input type="text" class="form-control" id="title">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">工期</span>
+            <input type="text" class="form-control" id="limit">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">任务执行人</span>
+            <input type="text" class="form-control" id="executorName">
+        </div>
+        <br>
+        <div class="input-group col-md-3">
+            <span class="input-group-addon">优先级</span>
+            <select id="select" class="form-control">
+                <option value="0">==请选择==</option>
+                <option value="1">暂不</option>
+                <option value="2">一般</option>
+                <option value="3">需要</option>
+                <option value="4">急</option>
+                <option value="5">很急</option>
+            </select>
+        </div>
+        <br>
+        <div class="input-group col-md-12">
+            <span class="input-group-addon">任务说明</span>
+            <textarea class="form-control" id="statement" rows="8"></textarea>
+        </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        btn_check();
+    })
+    function btn_check(){
+        $("#btn_submit").click(function(){
+           if(isEmpty()){
+               $.ajax({
+                   url: "/task/save",
+                   type: "post",
+                   data:{
+                       Title: $("#title").val(),
+                       TimeLimit: $("#limit").val(),
+                       ExecutorName: $("#executorName").val(),
+                       Priority: $("#select").val(),
+                       Statement: $("#statement").val()
+                   },
+                   dataType: "json",
+                   success: function(data){
+                       if(data.executorBool == "executorError")
+                           window.alert("执行人不存在！");
+                       else if(data.taskBool == "taskError")
+                           window.alert("任务创建失败！");
+                       else if(data.title == "titleExist")
+                           window.alert("任务已添加，请勿重复操作！");
+                       else
+                           window.alert("任务创建成功！");
+                   }
+               })
+           }
+        })
+    }
+    function isEmpty(){
+        if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){
+            window.alert("任务标题不为空！");
+            return false;
+        }else if($("#limit").val() == null || $("#limit").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("工期不为空！");
+            return false;
+        }else  if($("#executorName").val() == null || $("#executorName").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("任务执行人不为空！");
+            return false;
+        }else if($("#select").val() == 0){
+            window.alert("优先级未选择！");
+            return false;
+        }else if($("#statement").val() == null || $("#statement").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("任务说明不为空！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</html>
