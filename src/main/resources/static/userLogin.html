@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap-theme.min.css">
+</head>
+<script type="text/javascript">
+    var str = window.location.href;
+    str = str.substring(str.lastIndexOf("?")+1);
+    var map = str.split("=");
+    if(map[0] == "state"){
+        if(map[1] == "error"){
+            window.alert("登陆失败，请检查用户名或密码及身份正确！");
+        }
+    }
+</script>
+<style>
+    body{
+        margin: 0;
+        border: 0;
+    }
+    #login_form{
+        width:300px;
+        margin:0 auto;
+        margin-top:100px;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="form row">
+        <div class="form-horizontal col-md-offset-3" id="login_form">
+            <h3>请输入用户名与密码登录</h3>
+            <form action="/user/userLogin1" method="post">
+                <input class="form-control" type="text" name="count" maxlength="20" placeholder="username" required /><br>
+                <input class="form-control" type="password" name="password" placeholder="password"required /><br>
+                &nbsp;&nbsp;<input type="radio" value="admin" name="role">管理员
+                &nbsp;&nbsp;<input type="radio" value="teacher" name="role">教师
+                &nbsp;&nbsp;<input type="radio" value="student" name="role" checked>学生<br>
+                <input type="submit" class="btn btn-success pull-right" value="登录" /><br>
+                <a href="/user/registerpage">还没有账号,立即注册</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
