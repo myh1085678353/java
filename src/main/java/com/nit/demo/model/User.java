@@ -9,18 +9,15 @@ import java.util.Objects;
 public class User implements Serializable {
 
 //    创表时大写首字母
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
-    @Column(name = "Count",nullable = false)
     private String count;
-    @Column(name = "Name",nullable = false)
     private String name;
-    @Column(name = "Password",nullable = false)
     private String password;
-    @Column(name = "Role",nullable = false)
     private String role;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId(){
         return this.id;
     }
@@ -28,6 +25,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "Count",nullable = false)
     public String getCount() {
         return count;
     }
@@ -35,6 +33,7 @@ public class User implements Serializable {
         this.count = count;
     }
 
+    @Column(name = "Name",nullable = false)
     public String getName() {
         return name;
     }
@@ -42,6 +41,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    @Column(name = "Password",nullable = false)
     public String getPassword() {
         return password;
     }
@@ -49,6 +49,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    @Column(name = "Role",nullable = false)
     public String getRole() {
         return role;
     }
