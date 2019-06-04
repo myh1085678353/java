@@ -67,4 +67,7 @@ public class TaskService {
         }
         return task;
     }
+    public void delete(Integer id){
+        taskDao.deleteById(id);
+    }
 }

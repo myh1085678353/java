@@ -72,12 +72,17 @@ public class TaskController {
     }
 
     @RequestMapping(value = "getAlter")
-    public Task getAlter(HttpSession session){
+    public Map<String,Object> getAlter(HttpSession session){
+        Map<String, Object> map = new HashMap<>();
         Integer taskId = (Integer)session.getAttribute(TaskUtil.TaskId);
         Task task = null;
-        if(taskId != null)
+        map.put(TaskUtil.TaskBool,TaskUtil.TaskBoolError);
+        if(taskId != null) {
             task = taskService.findOne(taskId);
-        return task;
+            map.put(TaskUtil.TaskBool,TaskUtil.TaskBoolSuccess);
+            map.put(TaskUtil.Task,task);
+        }
+        return map;
     }
 
     @RequestMapping(value = "alter")
@@ -98,6 +103,21 @@ public class TaskController {
         task1.setPriority(task.getPriority());
         task1.setStatement(task.getStatement());
         map = taskService.save(task1,sender,ExecutorName);
+        return map;
+    }
+
+    @RequestMapping(value = "del")
+    public Map<String,Object> del(Integer taskId){
+        Map<String,Object> map = new HashMap<>();
+        Task task = taskService.findOne(taskId);
+        map.put(TaskUtil.TaskBool,TaskUtil.TaskBoolSuccess);
+        if(task != null){
+            try {
+                taskService.delete(taskId);
+            }catch(Exception e){
+                map.put(TaskUtil.TaskBool,TaskUtil.TaskBoolError);
+            }
+        }
         return map;
     }
 }

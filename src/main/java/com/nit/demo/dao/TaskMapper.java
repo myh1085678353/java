@@ -19,4 +19,6 @@ public interface TaskMapper extends CrudRepository<Task,Integer> {
     List<Task> findAll();
     Page<Task> findAllByBeginTimeBetween(String start_time,String end_tme,Pageable pageable);
     Page<Task> findBySender(User sender, Pageable pageable);
+
+    void deleteById(Integer id);
 }

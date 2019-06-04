@@ -1,15 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>论坛首页</title>
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
 
-<link rel="stylesheet" href="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.css">
-<link rel="stylesheet" href="js/bootstrap/bootstrap-table/bootstrap-table.css">
-<link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
-
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
-<script src="js/bootstrap/js/bootstrap.min.js"></script>
-<script src="js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
-<script src="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
-<script src="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
-<title>论坛首页</title>
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+    <script src="../js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
+</head>
 <style>
     body{
         width: 1000px;
@@ -23,7 +27,9 @@
         padding:0;
     }
 </style>
-<div class="row">
+<body>
+<div class="row" style="padding-left: 50px">
+    <br>
     <div class="form-inline">
         <div class="form-group">查看内容：按时间：<input class="form_datetime form-control" type="text" value="" size="16" id="start_time"></div>至
         <div class="form-group"><input class="form_datetime form-control" type="text" value="" size="16" id="end_time"></div>
@@ -33,6 +39,7 @@
         <table id="list"></table>
     </div>
 </div>
+</body>
 <script>
     $(document).ready(function(){
         setDate();
@@ -130,7 +137,7 @@
             return "-";
     }
     function idFormatter(value,row,index){
-        return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='show(" + value + ")'>查看</a>|<a href='javascript:;' onclick='delete(" + value + ")'>删除</a>";
+        return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='del(" + value + ")'>删除</a>";
     }
     function editor(id){
         $.ajax({
@@ -145,6 +152,25 @@
                     window.location.href = "task_alter.html";
                 else if(data.taskBool == "taskError")
                     window.alert("你无权修改！");
+            }
+        })
+    }
+    function del(id){
+        $.ajax({
+            url: "/task/del",
+            type: "post",
+            data:{
+                taskId: id
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.taskBool == "taskError")
+                    window.alert("删除失败！");
+                else if(data.taskBool == "taskSuccess") {
+                    window.alert("删除成功！");
+                    $("#list").bootstrapTable('destroy');
+                    listInit();
+                }
             }
         })
     }
@@ -198,3 +224,4 @@
         }
     }
 </script>
+</html>
