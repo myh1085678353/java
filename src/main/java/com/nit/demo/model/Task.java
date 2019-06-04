@@ -11,6 +11,7 @@ public class Task {
     private Integer Id;
     private String Title;//任务主题
     private String BeginTime;//创建时间
+    private String UpdateTime;
     private String TimeLimit;//工期
     private User Sender;//发送人
     private User Executor;//执行人
@@ -40,6 +41,14 @@ public class Task {
     }
     public void setBeginTime(String beginTime) {
         BeginTime = beginTime;
+    }
+
+    @Column(name = "update_time")
+    public String getUpdateTime() {
+        return UpdateTime;
+    }
+    public void setUpdateTime(String updateTime) {
+        UpdateTime = updateTime;
     }
 
     @Column(name = "time_limit",nullable = false)

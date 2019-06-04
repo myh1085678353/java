@@ -45,10 +45,10 @@ public class TaskController {
     }
 
     @RequestMapping(value = "findAll")
-    public Map<String,Object> findAll(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "rows", defaultValue = "1") Integer rows,HttpSession session){
+    public Map<String,Object> findAll(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "rows", defaultValue = "1") Integer rows,String start_date,String end_date,HttpSession session){
         Map<String, Object> map = new HashMap<>();
-        Pageable pageable = PageRequest.of(page-1,rows);
-        Page<Task> taskPage = taskService.findAll(pageable);
+        Pageable pageable = PageRequest.of(page-1,rows, Sort.Direction.DESC,"BeginTime");
+        Page<Task> taskPage = taskService.findAll(start_date,end_date,pageable);
         map.put("total",taskPage.getTotalElements());
         map.put("rows",taskPage.getContent());
         return map;
@@ -56,8 +56,8 @@ public class TaskController {
     /*
     只有发送者或执行人才能修改任务
      */
-    @RequestMapping(value = "alter")
-    public Map<String,Object> setTask(Integer taskId,HttpSession session){
+    @RequestMapping(value = "setAlter")
+    public Map<String,Object> setAlterId(Integer taskId,HttpSession session){
         Map<String,Object> map = new HashMap<>();
         User user = (User)session.getAttribute("session_user");
         Task task = taskService.findOne(taskId);
@@ -68,6 +68,36 @@ public class TaskController {
                 map.put(TaskUtil.TaskBool,TaskUtil.TaskBoolSuccess);
             }
         }
+        return map;
+    }
+
+    @RequestMapping(value = "getAlter")
+    public Task getAlter(HttpSession session){
+        Integer taskId = (Integer)session.getAttribute(TaskUtil.TaskId);
+        Task task = null;
+        if(taskId != null)
+            task = taskService.findOne(taskId);
+        return task;
+    }
+
+    @RequestMapping(value = "alter")
+    public Map<String,Object> alter(Task task, String ExecutorName, HttpSession session){
+        Integer taskId = (Integer)session.getAttribute(TaskUtil.TaskId);
+        Task task1 = null;
+        if(taskId != null){
+            task1 = taskService.findOne(taskId);
+        }
+        SimpleDateFormat df =  new SimpleDateFormat("yyyy-MM-dd");
+        String day = df.format(new Date());
+        Map<String, Object> map = new HashMap<>();
+        log.info(day+":"+task1.getTitle()+"alter...");
+        task1.setUpdateTime(day);
+        task1.setTitle(task.getTitle());
+        task1.setTimeLimit(task.getTimeLimit());
+        User sender = task1.getSender();
+        task1.setPriority(task.getPriority());
+        task1.setStatement(task.getStatement());
+        map = taskService.save(task1,sender,ExecutorName);
         return map;
     }
 }

@@ -57,10 +57,73 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function(){
-
-    })
+        getTask();
+        btn_save();
+        $("#btn_return").click(function(){
+            window.location.href = "task_list.html";
+        })
+    });
     function getTask(){
-
+        $.ajax({
+            url: "/task/getAlter",
+            type: "post",
+            data:{},
+            dataType: "json",
+            success: function(data){
+                $("#title").val(data.title);
+                $("#limit").val(data.timeLimit);
+                $("#executorName").val(data.executor.name);
+                $("#select").val(data.priority);
+                $("#statement").val(data.statement);
+            }
+        })
+    }
+    function btn_save(){
+        $("#btn_save").click(function(){
+            console.log($("#title").val());
+            console.log($("#limit").val());console.log($("#executorName").val());console.log($("#select").val());console.log($("#statement").val());
+            if(isEmpty()){
+                $.ajax({
+                    url: "/task/alter",
+                    type: "post",
+                    data:{
+                        Title: $("#title").val(),
+                        TimeLimit: $("#limit").val(),
+                        ExecutorName: $("#executorName").val(),
+                        Priority: $("#select").val(),
+                        Statement: $("#statement").val()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.executorBool == "executorError")
+                            window.alert("执行人不存在！");
+                        else if(data.taskBool == "taskError")
+                            window.alert("任务修改失败！");
+                        else
+                            window.alert("任务修改成功！");
+                    }
+                })
+            }
+        })
+    }
+    function isEmpty(){
+        if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){
+            window.alert("任务标题不为空！");
+            return false;
+        }else if($("#limit").val() == null || $("#limit").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("工期不为空！");
+            return false;
+        }else  if($("#executorName").val() == null || $("#executorName").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("任务执行人不为空！");
+            return false;
+        }else if($("#select").val() == 0){
+            window.alert("优先级未选择！");
+            return false;
+        }else if($("#statement").val() == null || $("#statement").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("任务说明不为空！");
+            return false;
+        }
+        return true;
     }
 </script>
 </html>

@@ -1,3 +1,5 @@
+
+<link rel="stylesheet" href="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.css">
 <link rel="stylesheet" href="js/bootstrap/bootstrap-table/bootstrap-table.css">
 <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
 
@@ -5,6 +7,8 @@
 <script src="js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
 <script src="js/bootstrap/js/bootstrap.min.js"></script>
 <script src="js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+<script src="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
 <title>论坛首页</title>
 <style>
     body{
@@ -20,14 +24,52 @@
     }
 </style>
 <div class="row">
+    <div class="form-inline">
+        <div class="form-group">查看内容：按时间：<input class="form_datetime form-control" type="text" value="" size="16" id="start_time"></div>至
+        <div class="form-group"><input class="form_datetime form-control" type="text" value="" size="16" id="end_time"></div>
+        <div class="form-group"><button type="button" id="btn_select" class="btn">查询</button></div>
+    </div>
     <div class="col-md-3" style="min-width:1200px;">
         <table id="list"></table>
     </div>
 </div>
 <script>
     $(document).ready(function(){
-        listInit();
+        setDate();
+        $("#btn_select").click(function(){
+            console.log($("#start_time").val()+" "+$("#end_time").val());
+            $("#list").bootstrapTable('destroy');
+            listInit();
+        })
     })
+    function setDate(){
+        var start = new Date();
+        var now = new Date();
+        start.setFullYear(start.getFullYear()-1);
+        $("#start_time").val(Date2String(start));
+        $("#end_time").val(Date2String(now));
+        $(".form_datetime").datetimepicker({
+            format: "yyyy-mm-dd",
+            autoclose: 1,    //当选择一个日期之后是否立即关闭此日期时间选择器。
+            todayBtn: 1,
+            todayHighlight: 1,   //高亮当前日期
+            language: 'zh-CN',//中文，需要引用zh-CN.js包
+            startView: 2,//月视图
+            minView: 2//日期时间选择器所能够提供的最精确的时间选择视图
+        });
+        listInit();
+    }
+    function Date2String(date){
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString();
+        var day = (date.getDate()).toString();
+        if(month.length == 1)
+            month = "0" + month;
+        if(day.length == 1)
+            day = "0" + day;
+        var dateTime = year + "-" + month + "-" + day;
+        return dateTime;
+    }
     function listInit(){
         $('#list').bootstrapTable({
             url: '/task/findAll',        //请求后台的URL（*）
@@ -40,7 +82,7 @@
             responseHandler: responseHandler,
             dataField: "rows",
             uniqueId: "Id",
-            height: 540,
+            height: 650,
             queryParams: queryParams,
             columns: [{
                 field: 'title',
@@ -51,6 +93,11 @@
                 field: 'beginTime',
                 title: '创建时间',
                 align: "center"
+            }, {
+                field: 'updateTime',
+                title: '修改时间',
+                align: "center",
+                formatter: updateFormatter
             }, {
                 field: 'sender',
                 title: '发送者',
@@ -76,9 +123,30 @@
             }, ]
         });
     }
-
+    function updateFormatter(value,row,index){
+        if(value != null)
+            return value;
+        else
+            return "-";
+    }
     function idFormatter(value,row,index){
         return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='show(" + value + ")'>查看</a>|<a href='javascript:;' onclick='delete(" + value + ")'>删除</a>";
+    }
+    function editor(id){
+        $.ajax({
+            url: "/task/setAlter",
+            type: "post",
+            data:{
+                taskId: id
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.taskBool == "taskSuccess")
+                    window.location.href = "task_alter.html";
+                else if(data.taskBool == "taskError")
+                    window.alert("你无权修改！");
+            }
+        })
     }
     function senderFormatter(value,row,index){
         if(value && value.name)
@@ -105,9 +173,6 @@
     }
 
     function responseHandler(result){
-        console.log(result);
-        console.log(result.total);
-        console.log(result.rows);
         if (result.total > 0 && result.rows.length > 0) {
             return {
                 total: result.total, //总页数,前面的key必须为"total"
@@ -128,6 +193,8 @@
         return {
             rows: params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
             page: params.offset / params.limit + 1, //当前页面,默认是上面设置的1(pageNumber)
+            start_date: $("#start_time").val(),
+            end_date: $("#end_time").val()
         }
     }
 </script>

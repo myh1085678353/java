@@ -55,8 +55,8 @@ public class TaskService {
         return map;
     }
 
-    public Page<Task> findAll(Pageable pageable){
-        Page<Task> taskPage = taskDao.findAll(pageable);
+    public Page<Task> findAll(String start_time,String end_time,Pageable pageable){
+        Page<Task> taskPage = taskDao.findAllByBeginTimeBetween(start_time,end_time,pageable);
         return taskPage;
     }
 
