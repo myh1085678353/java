@@ -70,11 +70,17 @@
             data:{},
             dataType: "json",
             success: function(data){
-                $("#title").val(data.title);
-                $("#limit").val(data.timeLimit);
-                $("#executorName").val(data.executor.name);
-                $("#select").val(data.priority);
-                $("#statement").val(data.statement);
+                if(data.taskBool == "taskSuccess") {
+                    var task = data.task;
+                    $("#title").val(task.title);
+                    $("#limit").val(task.timeLimit);
+                    $("#executorName").val(task.executor.name);
+                    $("#select").val(task.priority);
+                    $("#statement").val(task.statement);
+                }else if(data.taskBool == "taskError"){
+                    window.alert("发生未知错误，请重试！");
+                    window.location.href = "task_list.html";
+                }
             }
         })
     }
