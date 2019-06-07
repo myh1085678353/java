@@ -113,6 +113,7 @@ fatal： 级别比较高了。重大错误，这种级别你可以直接停止�
         <!--使用druid记录日志，可参考 https://github.com/alibaba/druid/wiki/Druid中使用log4j2进行日志输出-->
         <!--打印指定Mapper接口的SQL-->
         <logger name="com.demo.dao.UserMapper" level="DEBUG" />
+        <logger name="com,demo.dao.TaskMapper" level="DEBUG" />
 
     </loggers>
 </configuration>
