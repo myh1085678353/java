@@ -27,13 +27,12 @@ public class ProjectService {
     @Autowired
     private ProjectMapper projectDao;
 
-    public Map<String,Object> save(Project project, User clientName, String projectManagerName){
+    public Map<String,Object> save(Project project, String projectManagerName){
         User projectManager = userDao.findAllByName(projectManagerName);
         Map<String,Object> map = new HashMap<>();
         if(projectManager != null){
             map.put(ProjectUtil.projectManagerBool,ProjectUtil.projectManagerBoolSuccess);
             project.setProjectManager(projectManager);
-            project.setClientName(clientName);
             log.info(project.toString());
             Project project1 = projectDao.save(project);
             if(project1.getId() == null){

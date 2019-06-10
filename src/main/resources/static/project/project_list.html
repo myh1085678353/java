@@ -103,18 +103,15 @@
             }, {
                 field: 'updateTime',
                 title: '更新时间',
-                align: "center",
-                formatter: updateFormatter
+                align: "center"
             }, {
                 field: 'clientName',
                 title: '客户名称',
-                align: "center",
-                formatter: clientNameFormatter
+                align: "center"
             }, {
                 field: 'developmentNumber',
                 title: '开发人数',
-                align: "center",
-                formatter: developmentNumberFormatter
+                align: "center"
             },{
                 field: 'projectManager',
                 title: '项目经理',
@@ -122,7 +119,7 @@
                 width: "10%",
                 formatter: projectManagerFormatter
             },{
-                field: 'Completionstatus',
+                field: 'completionstatus',
                 title: '状态',
                 align: "center",
                 width: "10%",
@@ -198,15 +195,15 @@
             return "-";
     }
     function projectManagerFormatter(value,row,index){
-        if(value && value.name)
+        if(value.name)
             return value.name;
         else
             return "-";
     }
     function CompletionstatusFormatter(value,row,index){
         switch(value){
-            case 1: return "完成";
-            case 2: return "未完成";
+            case "1": return "完成";
+            case "2": return "未完成";
             default:
                 return "-";
         }
@@ -225,6 +222,7 @@
     }
 
     function responseHandler(result){
+        console.log(result.rows);
         if (result.total > 0 && result.rows.length > 0) {
             return {
                 total: result.total, //总页数,前面的key必须为"total"

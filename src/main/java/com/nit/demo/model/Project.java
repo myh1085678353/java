@@ -11,7 +11,7 @@ public class Project {
 
     private Integer Id;
     private String Title;//项目名称
-    private User ClientName;//客户名称
+    private String ClientName;//客户名称
     private User ProjectManager;//项目经理
     private Integer DevelopmentNumber;//开发人数
     private String BeginTime;//立项时间
@@ -37,12 +37,11 @@ public class Project {
         Title = title;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "client_name",referencedColumnName = "name",nullable = false)
-    public User getClientName() {
+    @Column(name = "client_name")
+    public String getClientName() {
         return ClientName;
     }
-    public void setClientName(User clientName) {
+    public void setClientName(String clientName) {
         ClientName = clientName;
     }
 

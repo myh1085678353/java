@@ -37,10 +37,9 @@ public class ProjectController {
         Map<String, Object> map = new HashMap<>();
         log.info(day+":"+project.getTitle()+"save...");
         project.setBeginTime(day);
-        User clientName = (User)session.getAttribute("session_user");
         map = projectService.titleBool(project.getTitle());
         if(!ProjectUtil.TitleExist.equals(map.get(ProjectUtil.Title)))
-            map = projectService.save(project,clientName,ProjectManagerName);
+            map = projectService.save(project,ProjectManagerName);
         return map;
     }
 
@@ -54,7 +53,7 @@ public class ProjectController {
         return map;
     }
     /*
-    只有发送者或执行人才能修改任务
+    只有发送者才能修改任务
      */
     @RequestMapping(value = "setAlter")
     public Map<String,Object> setAlterId(Integer taskId,HttpSession session){
@@ -63,7 +62,7 @@ public class ProjectController {
         Project project = projectService.findOne(taskId);
         map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolError);
         if(project != null) {
-            if(user.getId().equals(project.getClientName().getId()) || user.getId().equals(project.getProjectManager().getId())) {
+            if( user.getId().equals(project.getProjectManager().getId())) {
                 session.setAttribute(ProjectUtil.ProjectId, taskId);
                 map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolSuccess);
             }
@@ -98,10 +97,9 @@ public class ProjectController {
         log.info(day+":"+project1.getTitle()+"alter...");
         project1.setUpdateTime(day);
         project1.setTitle(project.getTitle());
-        User clientName = project1.getClientName();
         project1.setPriority(project.getPriority());
         project1.setStatement(project.getStatement());
-        map = projectService.save(project1,clientName,ProjectManagerName);
+        map = projectService.save(project1,ProjectManagerName);
         return map;
     }
 

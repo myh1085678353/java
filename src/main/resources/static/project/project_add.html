@@ -26,10 +26,6 @@
             <input type="text" class="form-control" id="title">
         </div>
         <br>
-        <div class="input-group col-md-6">
-            <span class="input-group-addon">立项时间</span>
-            <input type="text" class="form-control" id="beginTime">
-        </div>
         <br>
         <div class="input-group col-md-6">
             <span class="input-group-addon">客户名称</span>
@@ -39,6 +35,11 @@
         <div class="input-group col-md-6">
             <span class="input-group-addon">项目经理</span>
             <input type="text" class="form-control" id="projectManagerName">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">开发人员</span>
+            <input type="text" class="form-control" id="developmentNumber">
         </div>
         <br>
         <div class="input-group col-md-3">
@@ -81,11 +82,12 @@
                     type: "post",
                     data:{
                         Title: $("#title").val(),
-                        BeginTime: $("#beginTime").val(),
                         ProjectManagerName: $("#projectManagerName").val(),
                         Priority: $("#select").val(),
-                        Priority1: $("#select1").val(),
-                        Statement: $("#statement").val()
+                        Completionstatus: $("#select1").val(),
+                        Statement: $("#statement").val(),
+                        ClientName: $("#clientName").val(),
+                        DevelopmentNumber: $("#developmentNumber").val()
                     },
                     dataType: "json",
                     success: function(data){
@@ -105,9 +107,6 @@
     function isEmpty(){
         if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){
             window.alert("任务标题不为空！");
-            return false;
-        }else if($("#beginTime").val() == null || $("#beginTime").val().replace(/(^\s*)|(\s*$)/g, "") == null){
-            window.alert("立项时间不为空！");
             return false;
         }else  if($("#projectManagerName").val() == null || $("#projectManagerName").val().replace(/(^\s*)|(\s*$)/g, "") == null){
             window.alert("项目经理不为空！");
