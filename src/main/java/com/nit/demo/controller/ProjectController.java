@@ -37,10 +37,10 @@ public class ProjectController {
         Map<String, Object> map = new HashMap<>();
         log.info(day+":"+project.getTitle()+"save...");
         project.setBeginTime(day);
-        User client = (User)session.getAttribute("session_user");
+        User clientName = (User)session.getAttribute("session_user");
         map = projectService.titleBool(project.getTitle());
         if(!ProjectUtil.TitleExist.equals(map.get(ProjectUtil.Title)))
-            map = projectService.save(project,client,ProjectManagerName);
+            map = projectService.save(project,clientName,ProjectManagerName);
         return map;
     }
 
@@ -98,10 +98,10 @@ public class ProjectController {
         log.info(day+":"+project1.getTitle()+"alter...");
         project1.setUpdateTime(day);
         project1.setTitle(project.getTitle());
-        User client = project1.getClientName();
+        User clientName = project1.getClientName();
         project1.setPriority(project.getPriority());
         project1.setStatement(project.getStatement());
-        map = projectService.save(project1,client,ProjectManagerName);
+        map = projectService.save(project1,clientName,ProjectManagerName);
         return map;
     }
 

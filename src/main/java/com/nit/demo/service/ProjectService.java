@@ -1,12 +1,9 @@
 package com.nit.demo.service;
 
-import com.nit.demo.dao.TaskMapper;
 import com.nit.demo.dao.UserMapper;
 import com.nit.demo.dao.ProjectMapper;
-import com.nit.demo.model.Task;
 import com.nit.demo.model.User;
 import com.nit.demo.model.Project;
-import com.nit.demo.util.TaskUtil;
 import com.nit.demo.util.ProjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,7 +20,7 @@ public interface ProjectMapper extends CrudRepository<Project,Integer> {
 
     List<Project> findAll();
     Page<Project> findAllByBeginTimeBetween(String start_time,String end_tme,Pageable pageable);
-    Page<Project> findBySender(User sender, Pageable pageable);
+    Page<Project> findByClientName(User clientName, Pageable pageable);
 
     void deleteById(Integer id);
 }
