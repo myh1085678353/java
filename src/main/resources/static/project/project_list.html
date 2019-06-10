@@ -138,12 +138,6 @@
             } ]
         });
     }
-    function updateFormatter(value,row,index){
-        if(value != null)
-            return value;
-        else
-            return "-";
-    }
     function idFormatter(value,row,index){
         return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='del(" + value + ")'>删除</a>";
     }
@@ -222,6 +216,7 @@
     }
 
     function responseHandler(result){
+        console.log(result.rows);
         if (result.total > 0 && result.rows.length > 0) {
             return {
                 total: result.total, //总页数,前面的key必须为"total"

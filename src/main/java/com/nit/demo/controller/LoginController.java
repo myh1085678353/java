@@ -67,7 +67,7 @@ public class LoginController {
         SimpleDateFormat df =  new SimpleDateFormat("yyyy-MM-dd");
         String day = df.format(new Date());
         user.setRegistrationTime(day);
-        User u = userService.save1(user);
+        User u = userService.save(user);
         ModelAndView modelAndView = new ModelAndView();
         if(u != null) {
             log.info(u.getCount()+"注册成功！");
@@ -84,6 +84,7 @@ public class LoginController {
     public User show(HttpSession session){
         User user = (User)session.getAttribute("session_user");
         User u = userService.findOne(user.getId());
+        session.setAttribute("session_user",u);
         return u;
     }
 

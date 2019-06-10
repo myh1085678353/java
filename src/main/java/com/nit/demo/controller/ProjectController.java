@@ -99,6 +99,9 @@ public class ProjectController {
         project1.setTitle(project.getTitle());
         project1.setPriority(project.getPriority());
         project1.setStatement(project.getStatement());
+        project1.setDevelopmentNumber(project.getDevelopmentNumber());
+        project1.setClientName(project.getClientName());
+        project1.setStatement(project.getStatement());
         map = projectService.save(project1,ProjectManagerName);
         return map;
     }
