@@ -222,7 +222,6 @@
     }
 
     function responseHandler(result){
-        console.log(result.rows);
         if (result.total > 0 && result.rows.length > 0) {
             return {
                 total: result.total, //总页数,前面的key必须为"total"

@@ -113,7 +113,7 @@
         })
     }
     function isEmpty(){
-        if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){
+        if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){//首尾空格去掉
             window.alert("任务标题不为空！");
             return false;
         }else if($("#limit").val() == null || $("#limit").val().replace(/(^\s*)|(\s*$)/g, "") == null){

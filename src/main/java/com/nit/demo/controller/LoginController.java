@@ -1,10 +1,15 @@
 package com.nit.demo.controller;
 
+import com.nit.demo.model.Task;
 import com.nit.demo.model.User;
 import com.nit.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -24,52 +33,11 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = {"/loginHtml"})
-    public String loginHtml(){
-        return "userLogin";
-    }
-
-    @RequestMapping(value = {"/userLogin"})
-    public String Login(@RequestParam("count") String count, @RequestParam("password") String password, HttpServletRequest request){
-
-        User user = userService.login(count,password);
-
-        if(user != null){
-            request.getSession().setAttribute("session_user",user);
-            return "index";
-        }
-        return "loginError";
-    }
-
     @RequestMapping(value = {"/registerpage"})
     public ModelAndView registerpage(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/register.html");
         return  modelAndView;
-    }
-
-    @RequestMapping({"/uregister"})
-    public String addUser(@RequestParam("count") String count,
-                          @RequestParam("password") String password,
-                          @RequestParam("password2") String password2,
-                          @RequestParam("name") String name){
-        User u = new User();
-        u.setCount(count);
-        u.setPassword(password);
-        u.setName(name);
-        u.setRole("normal");
-        if(!password.equals(password2)){
-
-            return "两次密码不相同，注册失败！！";
-        }else {
-            User user = userService.save(u);
-            if(user == null){
-                return "注册失败！";
-            }else {
-                return "注册成功！";
-            }
-        }
-
     }
 
     /*
@@ -92,11 +60,13 @@ public class LoginController {
         return modelAndView;
 
     }
-    @ResponseBody
+
     @RequestMapping(value = "uregister1")
     public ModelAndView addUser1(User user, HttpSession session){
         System.out.println(user.toString());
-
+        SimpleDateFormat df =  new SimpleDateFormat("yyyy-MM-dd");
+        String day = df.format(new Date());
+        user.setRegistrationTime(day);
         User u = userService.save1(user);
         ModelAndView modelAndView = new ModelAndView();
         if(u != null) {
@@ -110,5 +80,24 @@ public class LoginController {
         return  modelAndView;
     }
 
+    @RequestMapping(value = "show")
+    public User show(HttpSession session){
+        User user = (User)session.getAttribute("session_user");
+        User u = userService.findOne(user.getId());
+        return u;
+    }
 
+    @RequestMapping(value = "save")
+    public String save(User user,HttpSession session){
+        User u = (User)session.getAttribute("session_user");
+        u.setPassword(user.getPassword());
+        u.setName(user.getName());
+        u.setEmail(user.getEmail());
+
+        User user1 = userService.save1(u);
+        if(u.getId().equals(user1.getId())){
+            return "success";
+        }
+        return "failed";
+    }
 }

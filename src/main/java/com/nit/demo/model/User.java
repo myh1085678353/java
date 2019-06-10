@@ -15,6 +15,8 @@ public class User implements Serializable {
     private String name;
     private String password;
     private String role;
+    private String email;
+    private String RegistrationTime;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +57,22 @@ public class User implements Serializable {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name = "registration_time")
+    public String getRegistrationTime() {
+        return RegistrationTime;
+    }
+    public void setRegistrationTime(String registrationTime) {
+        RegistrationTime = registrationTime;
     }
 
     @Override

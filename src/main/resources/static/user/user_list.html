@@ -2,9 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <title>人员查看</title>
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
 
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+    <script src="../js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
+</head>
+<style>
+    body{
+        width: 1000px;
+    }
+    #list{
+        table-layout:fixed;
+        word-break:break-all;
+        word-wrap:break-word;
+        border-collapse:collapse;
+        margin:0;
+        padding:0;
+    }
+</style>
+<body>
+<div class="form-horizontal" style="padding-left: 400px;padding-top: 50px;">
+    <h3>个人信息&nbsp;&nbsp;<button type="button" id="btn_alter" class="btn">修改</button></h3>
+    <form class="bs-example bs-example-form" role="form" style="padding-top: 50px">
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">名称：</span>
+            <input type="text" class="form-control" id="name">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">密码：</span>
+            <input type="password" class="form-control" id="password">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">角色：</span>
+            <input type="text" class="form-control" id="role" disabled="disabled">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">邮箱：</span>
+            <input type="text" class="form-control" id="email">
+        </div>
+        <br>
+        <div class="input-group col-md-6">
+            <span class="input-group-addon">注册时间：</span>
+            <input type="text" class="form-control" id="registrationTime"  disabled="disabled">
+        </div>
+    </form>
+</div>
 </body>
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url: "/user/show",
+            type: "post",
+            data: {},
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                $("#name").val(data.name);
+                $("#password").val(data.password);
+                switch(data.role){
+                    case "admin": $("#role").val("管理员"); break;
+                    case "user": $("#role").val("员工");break;
+                    default: $("role").val("-");
+                }
+                if(data.email != null)
+                    $("#email").val(data.email);
+                else if(data.email == null)
+                    $("#email").val("-");
+                $("#registrationTime").val(data.registrationTime);
+            }
+        })
+        $("#btn_alter").click(function(){
+            if(isEmpty()){
+                $.ajax({
+                    url: "/user/save",
+                    type: "post",
+                    data:{
+                        name: $("#name").val(),
+                        password: $("#password").val(),
+                        email: $("#email").val()
+                    },
+                    dataType: "text",
+                    success: function(data){
+                        console.log(data);
+                        if(data == "success"){
+                            window.alert("修改成功！");
+                        }else if(data == "failed"){
+                            window.alert("发生错误！请重试！");
+                        }
+                    }
+                })
+            }
+        })
+    })
+    function isEmpty(){
+        if($("#name").val() == null || $("#name").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("名字不为空！");
+            return false;
+        }else if($("#password").val() == null || $("#password").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("密码不为空！");
+            return false;
+        }else if($("#email").val() == null || $("#email").val().replace(/(^\s*)|(\s*$)/g, "") == null){
+            window.alert("邮箱不为空！");
+            return false;
+        }
+        return true;
+    }
+</script>
 </html>
