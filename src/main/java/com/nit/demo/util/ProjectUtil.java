@@ -1,9 +1,9 @@
 package com.nit.demo.util;
 
 public class ProjectUtil {
-    public static String executorBool = "executorBool";
-    public static String executorBoolError = "executorError";
-    public static String executorBoolSuccess = "executorSuccess";
+    public static String projectManagerBool = "projectManagerBool";
+    public static String projectManagerBoolError = "projectManagerError";
+    public static String projectManagerBoolSuccess = "projectManagerSuccess";
 
     public static String ProjectBool = "projectBool";
     public static String ProjectBoolError = "projectError";

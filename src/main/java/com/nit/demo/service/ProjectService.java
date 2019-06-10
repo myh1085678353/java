@@ -33,13 +33,13 @@ public class ProjectService {
     @Autowired
     private ProjectMapper projectDao;
 
-    public Map<String,Object> save(Project project, User sender, String executorName){
-        User executor = userDao.findAllByName(executorName);
+    public Map<String,Object> save(Project project, User clientName, String projectManagerName){
+        User projectManager = userDao.findAllByName(projectManagerName);
         Map<String,Object> map = new HashMap<>();
-        if(executor != null){
-            map.put(ProjectUtil.executorBool,ProjectUtil.executorBoolSuccess);
-            project.setExecutor(executor);
-            project.setSender(sender);
+        if(projectManager != null){
+            map.put(ProjectUtil.projectManagerBool,ProjectUtil.projectManagerBoolSuccess);
+            project.setProjectManager(projectManager);
+            project.setClientName(clientName);
             log.info(project.toString());
             Project project1 = projectDao.save(project);
             if(project1.getId() == null){
@@ -48,7 +48,7 @@ public class ProjectService {
                 map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolSuccess);
             }
         }else{
-            map.put(ProjectUtil.executorBool,ProjectUtil.executorBoolError);
+            map.put(ProjectUtil.projectManagerBool,ProjectUtil.projectManagerBoolError);
         }
         return map;
     }
@@ -74,6 +74,6 @@ public class ProjectService {
         return project;
     }
     public void delete(Integer id){
-        taskDao.deleteById(id);
+        projectDao.deleteById(id);
     }
 }

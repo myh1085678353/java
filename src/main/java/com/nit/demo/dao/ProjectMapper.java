@@ -15,6 +15,8 @@ public interface ProjectMapper extends CrudRepository<Project,Integer> {
     Project save(Project project);
     Project findAllByTitle(String title);
     Project findAllById(Integer id);
+    Project findAllByClientName(String clientName);
+    Project findAllByProjectManager(String projectManager);
 
     List<Project> findAll();
     Page<Project> findAllByBeginTimeBetween(String start_time,String end_tme,Pageable pageable);
