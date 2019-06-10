@@ -2,9 +2,252 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <title>论坛首页</title>
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../js/bootstrap/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
 
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/bootstrap-table.js"></script>
+    <script src="../js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../js/bootstrap/bootstrap-datetime/bootstrap-datetimepicker.min.js"></script>
+</head>
+<style>
+    body{
+        width: 1000px;
+    }
+    #list{
+        table-layout:fixed;
+        word-break:break-all;
+        word-wrap:break-word;
+        border-collapse:collapse;
+        margin:0;
+        padding:0;
+    }
+</style>
+<body>
+<div class="row" style="padding-left: 50px">
+    <br>
+    <div class="form-inline">
+        <div class="form-group">查看内容：按时间：<input class="form_datetime form-control" type="text" value="" size="16" id="start_time"></div>至
+        <div class="form-group"><input class="form_datetime form-control" type="text" value="" size="16" id="end_time"></div>
+        <div class="form-group"><button type="button" id="btn_select" class="btn">查询</button></div>
+    </div>
+    <div class="col-md-3" style="min-width:1200px;">
+        <table id="list"></table>
+    </div>
+</div>
 </body>
+<script>
+    $(document).ready(function(){
+        setDate();
+        $("#btn_select").click(function(){
+            console.log($("#start_time").val()+" "+$("#end_time").val());
+            $("#list").bootstrapTable('destroy');
+            listInit();
+        })
+    })
+    function setDate(){
+        var start = new Date();
+        var now = new Date();
+        start.setFullYear(start.getFullYear()-1);
+        $("#start_time").val(Date2String(start));
+        $("#end_time").val(Date2String(now));
+        $(".form_datetime").datetimepicker({
+            format: "yyyy-mm-dd",
+            autoclose: 1,    //当选择一个日期之后是否立即关闭此日期时间选择器。
+            todayBtn: 1,
+            todayHighlight: 1,   //高亮当前日期
+            language: 'zh-CN',//中文，需要引用zh-CN.js包
+            startView: 2,//月视图
+            minView: 2//日期时间选择器所能够提供的最精确的时间选择视图
+        });
+        listInit();
+    }
+    function Date2String(date){
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString();
+        var day = (date.getDate()).toString();
+        if(month.length == 1)
+            month = "0" + month;
+        if(day.length == 1)
+            day = "0" + day;
+        var dateTime = year + "-" + month + "-" + day;
+        return dateTime;
+    }
+    function listInit(){
+        $('#list').bootstrapTable({
+            url: '/project/findAll',        //请求后台的URL（*）
+            pageNumber: 1,          //初始化加载第一页，默认第一页
+            toolbar: "#toolbar",
+            pagination: true,       //是否分页
+            sidePagination: 'server',//指定服务器端分页
+            pageSize: 20,//单页记录数
+            pageList: [10, 20, 30, 40, "ALL"],
+            responseHandler: responseHandler,
+            dataField: "rows",
+            uniqueId: "Id",
+            height: 650,
+            queryParams: queryParams,
+            columns: [{
+                field: 'title',
+                title: '项目名称',
+                align: "center",
+                width: "40%"
+            }, {
+                field: 'beginTime',
+                title: '立项时间',
+                align: "center"
+            }, {
+                field: 'updateTime',
+                title: '更新时间',
+                align: "center",
+                formatter: updateFormatter
+            }, {
+                field: 'clientName',
+                title: '客户名称',
+                align: "center",
+                formatter: clientNameFormatter
+            }, {
+                field: 'developmentNumber',
+                title: '开发人数',
+                align: "center",
+                formatter: developmentNumberFormatter
+            },{
+                field: 'projectManager',
+                title: '项目经理',
+                align: "center",
+                width: "10%",
+                formatter: projectManagerFormatter
+            },{
+                field: 'Completionstatus',
+                title: '状态',
+                align: "center",
+                width: "10%",
+                formatter: CompletionstatusFormatter
+            }, {
+                field: 'priority',
+                title: '优先级',
+                align: "center",
+                width: "5%",
+                formatter: priorityFormatter
+            }, {
+                field: 'id',
+                title: '操作',
+                align: "center",
+                formatter: idFormatter
+            } ]
+        });
+    }
+    function updateFormatter(value,row,index){
+        if(value != null)
+            return value;
+        else
+            return "-";
+    }
+    function idFormatter(value,row,index){
+        return "<a href='javascript:;' onclick='editor(" + value + ")'>编辑</a>|<a href='javascript:;' onclick='del(" + value + ")'>删除</a>";
+    }
+    function editor(id){
+        $.ajax({
+            url: "/project/setAlter",
+            type: "post",
+            data:{
+                taskId: id
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.projectBool == "projectSuccess")
+                    window.location.href = "project_alter.html";
+                else if(data.projectBool == "projectError")
+                    window.alert("你无权修改！");
+            }
+        })
+    }
+    function del(id){
+        $.ajax({
+            url: "/project/del",
+            type: "post",
+            data:{
+                taskId: id
+            },
+            dataType: "json",
+            success: function(data){
+                if(data.projectBool == "projectError")
+                    window.alert("删除失败！");
+                else if(data.projectBool == "projectSuccess") {
+                    window.alert("删除成功！");
+                    $("#list").bootstrapTable('destroy');
+                    listInit();
+                }
+            }
+        })
+    }
+    function clientNameFormatter(value,row,index){
+        if(value && value.name)
+            return value.name;
+        else
+            return "-";
+    }
+    function developmentNumberFormatter(value,row,index){
+        if(value && value.name)
+            return value.name;
+        else
+            return "-";
+    }
+    function projectManagerFormatter(value,row,index){
+        if(value && value.name)
+            return value.name;
+        else
+            return "-";
+    }
+    function CompletionstatusFormatter(value,row,index){
+        switch(value){
+            case 1: return "完成";
+            case 2: return "未完成";
+            default:
+                return "-";
+        }
+    }
+
+    function priorityFormatter(value,row,index){
+        switch(value){
+            case 1: return "暂不";
+            case 2: return "一般";
+            case 3: return "需要";
+            case 4: return "急";
+            case 5: return "很急";
+            default:
+                return "-";
+        }
+    }
+
+    function responseHandler(result){
+        if (result.total > 0 && result.rows.length > 0) {
+            return {
+                total: result.total, //总页数,前面的key必须为"total"
+                rows: result.rows //行数据，前面的key要与之前设置的dataField的值一致.
+            };
+        } else if (result.total > 0 && !result.rows.length > 0) {
+            $("#tb_departments").bootstrapTable("selectPage", 1);
+            return;
+        }
+        return {
+            total: result.total, //总页数,前面的key必须为"total"
+            rows: result.rows//行数据，前面的key要与之前设置的dataField的值一致.
+
+        };
+    }
+
+    function queryParams(params) {
+        return {
+            rows: params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+            page: params.offset / params.limit + 1, //当前页面,默认是上面设置的1(pageNumber)
+            start_date: $("#start_time").val(),
+            end_date: $("#end_time").val()
+        }
+    }
+</script>
 </html>
