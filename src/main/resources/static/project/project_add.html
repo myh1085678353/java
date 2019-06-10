@@ -92,13 +92,13 @@
                     dataType: "json",
                     success: function(data){
                         if(data.projectManagerBool == "projectManagerError")
-                            window.alert("执行人不存在！");
+                            window.alert("项目经理不存在！");
                         else if(data.projectBool == "projectError")
-                            window.alert("任务创建失败！");
+                            window.alert("项目创建失败！");
                         else if(data.title == "titleExist")
-                            window.alert("任务已添加，请勿重复操作！");
+                            window.alert("项目已添加，请勿重复操作！");
                         else
-                            window.alert("任务创建成功！");
+                            window.alert("项目创建成功！");
                     }
                 })
             }
@@ -106,7 +106,7 @@
     }
     function isEmpty(){
         if($("#title").val() == null || $("#title").val().replace(/(^\s*)|(\s*$)/g, "") == null ){
-            window.alert("任务标题不为空！");
+            window.alert("项目标题不为空！");
             return false;
         }else  if($("#projectManagerName").val() == null || $("#projectManagerName").val().replace(/(^\s*)|(\s*$)/g, "") == null){
             window.alert("项目经理不为空！");
