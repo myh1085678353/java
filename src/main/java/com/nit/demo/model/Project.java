@@ -38,7 +38,7 @@ public class Project {
     }
 
     @ManyToOne
-    @JoinColumn(name = "client_name",nullable = false)
+    @JoinColumn(name = "client_name",referencedColumnName = "name",nullable = false)
     public User getClientName() {
         return ClientName;
     }
@@ -47,7 +47,7 @@ public class Project {
     }
 
     @ManyToOne
-    @JoinColumn(name = "project_manager",nullable = false)
+    @JoinColumn(name = "project_manager",referencedColumnName = "name",nullable = false)
     public  User getProjectManager() {
         return ProjectManager;
     }

@@ -25,9 +25,6 @@ public class ProjectService {
     private static Logger log = LoggerFactory.getLogger(ProjectService.class);
 
     @Autowired
-    private TaskMapper taskDao;
-
-    @Autowired
     private UserMapper userDao;
 
     @Autowired

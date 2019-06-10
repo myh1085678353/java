@@ -31,16 +31,16 @@ public class ProjectController {
     private ProjectService projectService;
 
     @RequestMapping(value = "save")
-    public Map<String,Object> save(Project project, String ExecutorName, HttpSession session){
+    public Map<String,Object> save(Project project, String ProjectManagerName, HttpSession session){
         SimpleDateFormat df =  new SimpleDateFormat("yyyy-MM-dd");
         String day = df.format(new Date());
         Map<String, Object> map = new HashMap<>();
         log.info(day+":"+project.getTitle()+"save...");
         project.setBeginTime(day);
-        User sender = (User)session.getAttribute("session_user");
+        User client = (User)session.getAttribute("session_user");
         map = projectService.titleBool(project.getTitle());
         if(!ProjectUtil.TitleExist.equals(map.get(ProjectUtil.Title)))
-            map = projectService.save(project,sender,ExecutorName);
+            map = projectService.save(project,client,ProjectManagerName);
         return map;
     }
 
@@ -63,7 +63,7 @@ public class ProjectController {
         Project project = projectService.findOne(taskId);
         map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolError);
         if(project != null) {
-            if(user.getId().equals(project.getSender().getId()) || user.getId().equals(project.getExecutor().getId())) {
+            if(user.getId().equals(project.getClientName().getId()) || user.getId().equals(project.getProjectManager().getId())) {
                 session.setAttribute(ProjectUtil.ProjectId, taskId);
                 map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolSuccess);
             }
@@ -74,19 +74,19 @@ public class ProjectController {
     @RequestMapping(value = "getAlter")
     public Map<String,Object> getAlter(HttpSession session){
         Map<String, Object> map = new HashMap<>();
-        Integer taskId = (Integer)session.getAttribute(ProjectUtil.ProjectId);
-        Project task = null;
+        Integer projectId = (Integer)session.getAttribute(ProjectUtil.ProjectId);
+        Project project = null;
         map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolError);
-        if(taskId != null) {
-            task = projectService.findOne(taskId);
+        if(projectId != null) {
+            project = projectService.findOne(projectId);
             map.put(ProjectUtil.ProjectBool,ProjectUtil.ProjectBoolSuccess);
-            map.put(ProjectUtil.Project,task);
+            map.put(ProjectUtil.Project,project);
         }
         return map;
     }
 
     @RequestMapping(value = "alter")
-    public Map<String,Object> alter(Project project, String ExecutorName, HttpSession session){
+    public Map<String,Object> alter(Project project, String ProjectManagerName, HttpSession session){
         Integer projectId = (Integer)session.getAttribute(ProjectUtil.ProjectId);
         Project project1 = null;
         if(projectId != null){
@@ -98,11 +98,10 @@ public class ProjectController {
         log.info(day+":"+project1.getTitle()+"alter...");
         project1.setUpdateTime(day);
         project1.setTitle(project.getTitle());
-        project1.setTimeLimit(project.getTimeLimit());
-        User sender = project1.getSender();
+        User client = project1.getClientName();
         project1.setPriority(project.getPriority());
         project1.setStatement(project.getStatement());
-        map = projectService.save(project1,sender,ExecutorName);
+        map = projectService.save(project1,client,ProjectManagerName);
         return map;
     }
 
